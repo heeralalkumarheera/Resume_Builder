@@ -3,130 +3,217 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interactive Resume Builder</title>
+    <title>Welcome to Resume Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0"></script>
   </head>
   <body>
-    <div class="progress-container">
-      <div class="progress-bar" id="progress-bar"></div>
-    </div>
+    <div class="ambient-shape shape-one"></div>
+    <div class="ambient-shape shape-two"></div>
 
-    <div class="container">
-      <form id="resume-form">
-        <h2>Resume Builder</h2>
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          oninput="updatePreview()"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          oninput="updatePreview()"
-        />
-        <input
-          type="text"
-          name="phone"
-          placeholder="Phone Number"
-          oninput="updatePreview()"
-        />
-
-        <textarea
-          name="github"
-          placeholder="GitHub Profile URL"
-          oninput="updatePreview()"
-        ></textarea>
-
-        <textarea
-          name="linkedin"
-          placeholder="LinkedIn Profile URL"
-          oninput="updatePreview()"
-        ></textarea>
-
-        <textarea
-          name="summary"
-          placeholder="Profile Summary"
-          oninput="updatePreview()"
-        ></textarea>
-
-        <div id="education-section">
-          <h4>Education</h4>
-          <div class="edu-entry">
-            <input
-              type="text"
-              placeholder="Education Details"
-              class="education-input"
-              oninput="updatePreview()"
-            />
-          </div>
-          <button type="button" onclick="addEducation()">Add Education</button>
-        </div>
-
-        <div>
-          <h4>Skills</h4>
-          <input
-            type="text"
-            id="skills"
-            placeholder="e.g. HTML, CSS, JavaScript"
-            oninput="updatePreview()"
-          />
-        </div>
-
-        <div id="experience-section">
-          <h4>Experience</h4>
-          <div class="exp-entry">
-            <input
-              type="text"
-              placeholder="Experience Details"
-              class="experience-input"
-              oninput="updatePreview()"
-            />
-          </div>
-          <button type="button" onclick="addExperience()">
-            Add Experience
-          </button>
-        </div>
-
-        <div id="achievement-section">
-          <h4>Achievements</h4>
-          <!-- Dynamic achievement fields will be added here -->
-          <button type="button" onclick="addAchievement()">
-            Add Achievement
-          </button>
-        </div>
-
-        <div id="internship-section">
-          <h4>Internships</h4>
-          <!-- Dynamic internship fields will be added here -->
-          <button type="button" onclick="addInternship()">
-            Add Internship
-          </button>
-        </div>
-
-        <div id="workshop-section">
-          <h4>Workshops</h4>
-          <!-- Dynamic workshop fields will be added here -->
-          <button type="button" onclick="addWorkshop()">Add Workshop</button>
-        </div>
-
-        <button type="button" onclick="clearForm()">Clear</button>
-        <button type="button" onclick="downloadPDF()">Download PDF</button>
-      </form>
-      <div id="resume-preview" class="box">
-        <h1 id="resume-title">RESUME</h1>
-
-        <p id="preview-name"></p>
-        <p id="preview-email"></p>
-        <p id="preview-phone"></p>
-        <p id="preview-summary"></p>
-        <div id="preview-education"></div>
-        <div id="preview-skills"></div>
-        <div id="preview-experience"></div>
+    <nav class="top-nav no-print">
+      <div class="nav-brand">
+        <span class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <path d="M7 2.5h7.7L20.5 8v13A2.5 2.5 0 0 1 18 23.5H7A2.5 2.5 0 0 1 4.5 21V5A2.5 2.5 0 0 1 7 2.5Zm7 1.8V8h3.7L14 4.3ZM8 11h8a.8.8 0 0 0 0-1.6H8A.8.8 0 0 0 8 11Zm0 3.8h8a.8.8 0 0 0 0-1.6H8a.8.8 0 0 0 0 1.6Zm0 3.8h5a.8.8 0 0 0 0-1.6H8a.8.8 0 1 0 0 1.6Z" />
+          </svg>
+        </span>
+        <span>Resume Studio</span>
       </div>
-    </div>
+      <div id="nav-links" class="nav-links"></div>
+    </nav>
+
+    <main class="app-shell">
+      <section class="form-panel">
+        <div class="panel-top">
+          <h1>Resume Studio</h1>
+          <p>Create a clean, ATS-friendly resume that looks premium.</p>
+        </div>
+
+        <div class="progress-wrap">
+          <div class="progress-label-row">
+            <span>Form Completion</span>
+            <span id="progress-value">0%</span>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+          </div>
+        </div>
+
+        <form id="resume-form">
+          <div class="section-card">
+            <h3>Basic Information</h3>
+            <input type="text" name="name" placeholder="Full Name" oninput="updatePreview()" />
+            <input type="text" name="title" placeholder="Professional Title (e.g. Frontend Developer)" oninput="updatePreview()" />
+            <input type="email" name="email" placeholder="Email" oninput="updatePreview()" />
+            <input type="text" name="phone" placeholder="Phone Number" oninput="updatePreview()" />
+            <input type="text" name="location" placeholder="Location (City, Country)" oninput="updatePreview()" />
+          </div>
+
+          <div class="section-card">
+            <h3>Profile Photo</h3>
+            <input type="file" id="profile-image" accept="image/*" onchange="handleImageUpload(event)" />
+          </div>
+
+          <div class="section-card">
+            <h3>Links</h3>
+            <input type="url" name="linkedin" placeholder="LinkedIn URL" oninput="updatePreview()" />
+            <input type="url" name="github" placeholder="GitHub URL" oninput="updatePreview()" />
+            <input type="url" name="portfolio" placeholder="Portfolio URL" oninput="updatePreview()" />
+          </div>
+
+          <div class="section-card">
+            <h3>Summary</h3>
+            <textarea name="summary" placeholder="Write 3-4 lines about your profile" oninput="updatePreview()"></textarea>
+          </div>
+
+          <div id="education-section" class="section-card">
+            <h3>Education</h3>
+            <div class="edu-entry inline-entry">
+              <div class="field-col">
+                <label>Degree</label>
+                <input type="text" class="education-degree" placeholder="B.Tech in CSE" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Institute</label>
+                <input type="text" class="education-institute" placeholder="ABC Institute" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Year</label>
+                <input type="text" class="education-year" placeholder="2026" oninput="updatePreview()" />
+              </div>
+            </div>
+            <button type="button" class="ghost-btn" onclick="addEducation()">+ Add Education</button>
+          </div>
+
+          <div class="section-card">
+            <h3>Skills</h3>
+            <input type="text" id="skills" placeholder="e.g. HTML, CSS, JavaScript, React" oninput="updatePreview()" />
+          </div>
+
+          <div id="experience-section" class="section-card">
+            <h3>Experience</h3>
+            <div class="exp-entry inline-entry experience-entry-grid">
+              <div class="field-col">
+                <label>Role</label>
+                <input type="text" class="experience-role" placeholder="Frontend Developer" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Company</label>
+                <input type="text" class="experience-company" placeholder="XYZ Pvt Ltd" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Duration (Months)</label>
+                <input type="number" min="0" class="experience-duration" placeholder="18" oninput="updatePreview()" />
+              </div>
+            </div>
+            <button type="button" class="ghost-btn" onclick="addExperience()">+ Add Experience</button>
+          </div>
+
+          <div id="achievement-section" class="section-card">
+            <h3>Achievements</h3>
+            <button type="button" class="ghost-btn" onclick="addAchievement()">+ Add Achievement</button>
+          </div>
+
+          <div id="internship-section" class="section-card">
+            <h3>Internships</h3>
+            <div class="intern-entry inline-entry internship-entry-grid">
+              <div class="field-col">
+                <label>Role</label>
+                <input type="text" class="intern-role" placeholder="Software Intern" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Company</label>
+                <input type="text" class="intern-company" placeholder="Tech Labs" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Start Date</label>
+                <input type="date" class="intern-start" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>End Date</label>
+                <input type="date" class="intern-end" oninput="updatePreview()" />
+              </div>
+              <div class="field-col checkbox-col">
+                <label>
+                  <input type="checkbox" class="intern-current" onchange="toggleInternCurrent(this)" />
+                  Current Work
+                </label>
+              </div>
+            </div>
+            <button type="button" class="ghost-btn" onclick="addInternship()">+ Add Internship</button>
+          </div>
+
+          <div id="project-section" class="section-card">
+            <h3>Projects</h3>
+            <div class="project-entry inline-entry project-entry-grid">
+              <div class="field-col">
+                <label>Project Name</label>
+                <input type="text" class="project-name" placeholder="Resume Builder" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>GitHub Link</label>
+                <input type="url" class="project-github" placeholder="https://github.com/username/repo" oninput="updatePreview()" />
+              </div>
+              <div class="field-col">
+                <label>Deploy Link</label>
+                <input type="url" class="project-deploy" placeholder="https://your-project.vercel.app" oninput="updatePreview()" />
+              </div>
+            </div>
+            <button type="button" class="ghost-btn" onclick="addProject()">+ Add Project</button>
+          </div>
+
+          <div id="workshop-section" class="section-card">
+            <h3>Workshops</h3>
+            <button type="button" class="ghost-btn" onclick="addWorkshop()">+ Add Workshop</button>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="secondary-btn" onclick="clearForm()">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="preview-panel">
+        <div class="ats-card no-print">
+          <div>
+            <h3>ATS Score</h3>
+            <p id="ats-note">Fill details to improve your score.</p>
+          </div>
+          <div class="ats-score" id="ats-score">0</div>
+        </div>
+
+        <div id="resume-preview" class="resume-sheet"></div>
+
+        <div class="preview-actions no-print">
+          <button type="button" class="primary-btn" onclick="downloadPDF()">Download PDF</button>
+          <button type="button" class="primary-btn" onclick="downloadWord()" style="background: #2563eb; margin-left: 10px;">Download Word</button>
+        </div>
+
+        <footer class="app-footer no-print">
+          <p class="footer-brand">@Heeralal</p>
+          <a
+            id="footer-review-mail-link"
+            class="gmail-link"
+            href="mailto:heeralalkumarheera@gmail.com"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M3 6.5A2.5 2.5 0 0 1 5.5 4h13A2.5 2.5 0 0 1 21 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5v-11Zm2.2-.5 6.8 5.2L18.8 6H5.2Zm13.8 1.25-6.4 4.9a1 1 0 0 1-1.2 0L5 7.25V17.5c0 .28.22.5.5.5h13a.5.5 0 0 0 .5-.5V7.25Z"
+              />
+            </svg>
+            <span>Suggestion if any: heeralalkumarheera@gmail.com</span>
+          </a>
+        </footer>
+      </section>
+    </main>
 
     <script src="script.js"></script>
   </body>
