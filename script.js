@@ -1,5 +1,76 @@
 let profileImageData = "";
 
+function showComingSoon() {
+  alert("This features are Coming soon");
+}
+
+function isUserLoggedIn() {
+  return localStorage.getItem("resumeStudioLoggedIn") === "true";
+}
+
+function setUserLoggedIn(status) {
+  localStorage.setItem("resumeStudioLoggedIn", status ? "true" : "false");
+}
+
+function toggleProfileMenu(event) {
+  event.stopPropagation();
+  const menu = document.getElementById("profile-menu");
+  if (!menu) return;
+  menu.classList.toggle("open");
+}
+
+function closeProfileMenu() {
+  const menu = document.getElementById("profile-menu");
+  if (!menu) return;
+  menu.classList.remove("open");
+}
+
+function handleNavAction(action) {
+  if (action === "login" || action === "signup") {
+    setUserLoggedIn(true);
+    renderNavbar();
+  }
+
+  if (action === "logout") {
+    setUserLoggedIn(false);
+    renderNavbar();
+  }
+
+  closeProfileMenu();
+  showComingSoon();
+}
+
+function renderNavbar() {
+  const navLinks = document.getElementById("nav-links");
+  if (!navLinks) return;
+
+  if (isUserLoggedIn()) {
+    navLinks.innerHTML = `
+      <button type="button" class="nav-item" onclick="handleNavAction('dashboard')">Dashboard</button>
+      <button type="button" class="nav-item" onclick="handleNavAction('my-resumes')">My Resumes</button>
+      <button type="button" class="nav-item" onclick="handleNavAction('create-resume')">Create Resume</button>
+      <div class="nav-dropdown">
+        <button type="button" class="nav-item nav-profile-btn" onclick="toggleProfileMenu(event)">
+          Profile <span class="caret">▾</span>
+        </button>
+        <div id="profile-menu" class="profile-menu">
+          <button type="button" class="profile-action" onclick="handleNavAction('edit')">Edit</button>
+          <button type="button" class="profile-action" onclick="handleNavAction('logout')">Logout</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  navLinks.innerHTML = `
+    <button type="button" class="nav-item" onclick="handleNavAction('home')">Home</button>
+    <button type="button" class="nav-item" onclick="handleNavAction('templates')">Templates</button>
+    <button type="button" class="nav-item" onclick="handleNavAction('about')">About</button>
+    <button type="button" class="nav-item" onclick="handleNavAction('login')">Login</button>
+    <button type="button" class="nav-item nav-cta" onclick="handleNavAction('signup')">Sign Up</button>
+  `;
+}
+
 function escapeHTML(value) {
   return String(value || "")
     .replaceAll("&", "&amp;")
@@ -878,5 +949,7 @@ function updateProgressBar() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  renderNavbar();
+  document.addEventListener("click", closeProfileMenu);
   updatePreview();
 });
